@@ -8,7 +8,7 @@ namespace PersonnelAccounting
         static void Main(string[] args)
         {
             const string CommandCreateFile = "1";
-            const string ButtonReadFiles = "2";
+            const string ButtonShowDossiers = "2";
             const string ButtonDeleteFile = "3";
             const string ButtonSearchLastName = "4";
             const string ButtonExit = "exit";
@@ -21,7 +21,7 @@ namespace PersonnelAccounting
             while (isRunning)
             {
                 Console.WriteLine($"Введите {CommandCreateFile}, чтобы создать запись.\n" +
-                    $"Введите {ButtonReadFiles}, чтобы просмотреть досье.\n" +
+                    $"Введите {ButtonShowDossiers}, чтобы просмотреть досье.\n" +
                     $"Введите {ButtonDeleteFile}, чтобы удалить досье.\n" +
                     $"Введите {ButtonSearchLastName}, чтобы найти досье.\n" +
                     $"Введите {ButtonExit}, чтобы выйти.");
@@ -35,8 +35,8 @@ namespace PersonnelAccounting
                         CreateFile(ref fullNames, ref jobsTitles);
                         break;
 
-                    case ButtonReadFiles:
-                        ReadFiles(fullNames, jobsTitles);
+                    case ButtonShowDossiers:
+                        ShowDossiers(fullNames, jobsTitles);
                         break;
 
                     case ButtonDeleteFile:
@@ -138,7 +138,7 @@ namespace PersonnelAccounting
             return jobTitle;
         }
 
-        static void ReadFiles(string[] fullNames, string[] jobsTitles)
+        static void ShowDossiers(string[] fullNames, string[] jobsTitles)
         {
             string separator = "-";
 
@@ -157,7 +157,7 @@ namespace PersonnelAccounting
 
         static void DeleteFile(ref string[] fullNames, ref string[] jobsTitles)
         {
-            ReadFiles(fullNames, jobsTitles);
+            ShowDossiers(fullNames, jobsTitles);
 
             int index = ReadIndex(fullNames, jobsTitles);
 
