@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace PersonnelAccounting
 {
@@ -6,7 +7,7 @@ namespace PersonnelAccounting
     {
         static void Main(string[] args)
         {
-            const string ButtonCreateFile = "1";
+            const string CommandCreateFile = "1";
             const string ButtonReadFiles = "2";
             const string ButtonDeleteFile = "3";
             const string ButtonSearchLastName = "4";
@@ -19,7 +20,7 @@ namespace PersonnelAccounting
 
             while (isRunning)
             {
-                Console.WriteLine($"Введите {ButtonCreateFile}, чтобы создать запись.\n" +
+                Console.WriteLine($"Введите {CommandCreateFile}, чтобы создать запись.\n" +
                     $"Введите {ButtonReadFiles}, чтобы просмотреть досье.\n" +
                     $"Введите {ButtonDeleteFile}, чтобы удалить досье.\n" +
                     $"Введите {ButtonSearchLastName}, чтобы найти досье.\n" +
@@ -30,7 +31,7 @@ namespace PersonnelAccounting
 
                 switch (userInput)
                 {
-                    case ButtonCreateFile:
+                    case CommandCreateFile:
                         CreateFile(ref fullNames, ref jobsTitles);
                         break;
 
@@ -63,8 +64,8 @@ namespace PersonnelAccounting
 
         static void CreateFile(ref string[] fullNames, ref string[] jobsTitles)
         {
-            fullNames = MakeExpandedArray(fullNames);
-            jobsTitles = MakeExpandedArray(jobsTitles);
+            fullNames = ExpandArray(fullNames);
+            jobsTitles = ExpandArray(jobsTitles);
 
             int lastIndexFullNames = fullNames.Length - 1;
             int lastIndexJobsTitles = jobsTitles.Length - 1;
@@ -76,8 +77,8 @@ namespace PersonnelAccounting
                 string buttonAccept = "1";
                 string buttonCansel = "2";
 
-                string name = InputNames();
-                string jobTitle = InputJobTitle();
+                string name = ReturnNames();
+                string jobTitle = ReturnJobTitle();
 
                 Console.WriteLine($"Нового сотрудника зовут:\n" +
                     $"{name}.\n" +
@@ -95,13 +96,17 @@ namespace PersonnelAccounting
                     isRunning = false;
                 }
                 else if (userInput == buttonCansel)
+                {
                     isRunning = false;
+                }
                 else
+                {
                     Console.WriteLine($"Введите всё заново.");
+                }
             }
         }
 
-        static string InputNames()
+        static string ReturnNames()
         {
             string lastNameInput = null;
             string firstNameInput = null;
@@ -125,7 +130,7 @@ namespace PersonnelAccounting
             return name;
         }
 
-        static string InputJobTitle()
+        static string ReturnJobTitle()
         {
             Console.WriteLine("Введите должность:");
             string jobTitle = Console.ReadLine();
@@ -164,22 +169,20 @@ namespace PersonnelAccounting
                 string userInput = Console.ReadLine();
 
                 bool isSuccess = int.TryParse(userInput, out index);
+                    
+                index -= 1;
 
-                if (isSuccess)
+                if (isSuccess && index >= 0 && index < fullNames.Length)
                 {
-                    for (int i = index; i < fullNames.Length; i++)
-                    {
-                        fullNames[i - 1] = fullNames[i];
-                        jobsTitles[i - 1] = jobsTitles[i];
-                    }
-
-                    fullNames = MakeReducedArray(fullNames);
-                    jobsTitles = MakeReducedArray(jobsTitles);
+                    fullNames = MakeReducedArray(fullNames, index);
+                    jobsTitles = MakeReducedArray(jobsTitles, index);
 
                     isRunning = false;
                 }
                 else
+                {
                     Console.WriteLine("Такого порядкового номера нет.");
+                }
             }
         }
 
@@ -188,6 +191,8 @@ namespace PersonnelAccounting
             Console.WriteLine("Введите фамилию:");
             string userInput = Console.ReadLine();
 
+            bool coincidence = false;
+
             for (int i = 0; i < fullNames.Length; i++)
             {
                 char separator = ' ';
@@ -195,12 +200,19 @@ namespace PersonnelAccounting
                 string[] tempArray = fullNames[i].Split(separator);
 
                 if (userInput == tempArray[0])
+                {
                     Console.WriteLine($"По вашему запросу найдено:\n" +
                         $"{fullNames[i]} - {jobsTitles[i]}\n");
+                    coincidence = true;
+                }
+
             }
+
+            if (coincidence == false)
+                Console.WriteLine("Во вашему запросу ничего не найдено.");
         }
 
-        static string[] MakeExpandedArray(string[] array)
+        static string[] ExpandArray(string[] array)
         {
             string[] tempArray = new string[array.Length + 1];
 
@@ -212,12 +224,15 @@ namespace PersonnelAccounting
             return array;
         }
 
-        static string[] MakeReducedArray(string[] array)
+        static string[] MakeReducedArray(string[] array, int index)
         {
             string[] tempArray = new string[array.Length - 1];
 
-            for (int i = 0; i < array.Length - 1; i++)
+            for (int i = 0; i < index; i++)
                 tempArray[i] = array[i];
+
+            for (int i = index + 1; i < array.Length; i++)
+                tempArray[i - 1] = array[i];
 
             array = tempArray;
 
