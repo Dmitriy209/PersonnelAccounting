@@ -77,8 +77,8 @@ namespace PersonnelAccounting
                 string buttonAccept = "1";
                 string buttonCansel = "2";
 
-                string name = ReturnNames();
-                string jobTitle = ReturnJobTitle();
+                string name = ReadFullName();
+                string jobTitle = ReadJobName();
 
                 Console.WriteLine($"Нового сотрудника зовут:\n" +
                     $"{name}.\n" +
@@ -106,7 +106,7 @@ namespace PersonnelAccounting
             }
         }
 
-        static string ReturnNames()
+        static string ReadFullName()
         {
             string lastNameInput = null;
             string firstNameInput = null;
@@ -125,12 +125,12 @@ namespace PersonnelAccounting
             surnameInput = Console.ReadLine();
             Console.Clear();
 
-            string name = lastNameInput + separator + firstNameInput + separator + surnameInput;
+            string name = $"{lastNameInput}{separator}{firstNameInput}{separator}{surnameInput}";
 
             return name;
         }
 
-        static string ReturnJobTitle()
+        static string ReadJobName()
         {
             Console.WriteLine("Введите должность:");
             string jobTitle = Console.ReadLine();
@@ -159,31 +159,34 @@ namespace PersonnelAccounting
         {
             ReadFiles(fullNames, jobsTitles);
 
+            int index = ReadIndex(fullNames, jobsTitles);
+
+            fullNames = ReduceArray(fullNames, index);
+            jobsTitles = ReduceArray(jobsTitles, index);
+        }
+
+        static int ReadIndex(string[] fullNames, string[] jobsTitles)
+        {
             bool isRunning = true;
+
+            int index = 0;
 
             while (isRunning)
             {
-                int index;
-
-                Console.WriteLine("Чьё досье хотите удалить? Введите порядковый номер.");
+                Console.WriteLine("Чьё досье хотите удалить? Введите порядковый номер:");
                 string userInput = Console.ReadLine();
 
                 bool isSuccess = int.TryParse(userInput, out index);
-                    
+
                 index -= 1;
 
                 if (isSuccess && index >= 0 && index < fullNames.Length)
-                {
-                    fullNames = MakeReducedArray(fullNames, index);
-                    jobsTitles = MakeReducedArray(jobsTitles, index);
-
                     isRunning = false;
-                }
                 else
-                {
                     Console.WriteLine("Такого порядкового номера нет.");
-                }
             }
+
+            return index;
         }
 
         static void SearchLastName(string[] fullNames, string[] jobsTitles)
@@ -191,7 +194,7 @@ namespace PersonnelAccounting
             Console.WriteLine("Введите фамилию:");
             string userInput = Console.ReadLine();
 
-            bool coincidence = false;
+            bool isCoincidence = false;
 
             for (int i = 0; i < fullNames.Length; i++)
             {
@@ -203,12 +206,12 @@ namespace PersonnelAccounting
                 {
                     Console.WriteLine($"По вашему запросу найдено:\n" +
                         $"{fullNames[i]} - {jobsTitles[i]}\n");
-                    coincidence = true;
+                    isCoincidence = true;
                 }
 
             }
 
-            if (coincidence == false)
+            if (isCoincidence == false)
                 Console.WriteLine("Во вашему запросу ничего не найдено.");
         }
 
@@ -224,7 +227,7 @@ namespace PersonnelAccounting
             return array;
         }
 
-        static string[] MakeReducedArray(string[] array, int index)
+        static string[] ReduceArray(string[] array, int index)
         {
             string[] tempArray = new string[array.Length - 1];
 
