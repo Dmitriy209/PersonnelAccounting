@@ -194,7 +194,7 @@ namespace PersonnelAccounting
             Console.WriteLine("Введите фамилию:");
             string userInput = Console.ReadLine();
 
-            bool isCoincidence = false;
+            bool isFound = false;
 
             for (int i = 0; i < fullNames.Length; i++)
             {
@@ -206,12 +206,12 @@ namespace PersonnelAccounting
                 {
                     Console.WriteLine($"По вашему запросу найдено:\n" +
                         $"{fullNames[i]} - {jobsTitles[i]}\n");
-                    isCoincidence = true;
+                    isFound = true;
                 }
 
             }
 
-            if (isCoincidence == false)
+            if (isFound == false)
                 Console.WriteLine("Во вашему запросу ничего не найдено.");
         }
 
@@ -222,9 +222,7 @@ namespace PersonnelAccounting
             for (int i = 0; i < array.Length; i++)
                 tempArray[i] = array[i];
 
-            array = tempArray;
-
-            return array;
+            return tempArray;
         }
 
         static string[] ReduceArray(string[] array, int index)
@@ -237,9 +235,7 @@ namespace PersonnelAccounting
             for (int i = index + 1; i < array.Length; i++)
                 tempArray[i - 1] = array[i];
 
-            array = tempArray;
-
-            return array;
+            return tempArray;
         }
     }
 }
